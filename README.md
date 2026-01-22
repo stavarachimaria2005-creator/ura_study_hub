@@ -77,4 +77,4 @@ Aplicația va utiliza un modul intern de Analytics pentru a monitoriza activitat
 
 
 
-**Vrei să te ajut să generezi și fișierul `.env.example` pe care să-l pui pe GitHub, ca să știe colegii (utilizatorii) ce trebuie să completeze când instalează aplicația?**
+
