@@ -1,37 +1,32 @@
-import axios from 'axios';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import Auth from './pages/Auth';
+import Dashboard from './pages/Dashboard';
 
-// Definim adresa de bază a serverului (cea din fișierul .env al backend-ului)
-const API_URL = 'http://localhost:5001/api';
+function App() {
+  // Verificăm dacă utilizatorul este logat (are un token în browser)
+  const isAuthenticated = !!localStorage.getItem('token');
 
-/**
- * Trimite un URL de știre către backend pentru a fi analizat de Gemini
- * @param {string} url - Link-ul știrii
- * @param {string} projectName - Numele proiectului dat de student
- * @param {string} userId - ID-ul studentului logat
- */
-export const analyzeNewsArticle = async (url, projectName, userId) => {
-  try {
-    const response = await axios.post(`${API_URL}/analyze`, {
-      url,
-      projectName,
-      userId
-    });
-    return response.data; // Returnează proiectul salvat și analiza AI
-  } catch (error) {
-    console.error("Eroare la comunicarea cu serverul:", error);
-    throw error;
-  }
-};
+  return (
+    <Router>
+      <div className="App">
+        <Routes>
+          {/* 1. Pagina de Login/Register */}
+          <Route path="/" element={<Auth />} />
 
-/**
- * Funcție pentru a prelua toate proiectele salvate ale unui utilizator
- */
-export const getUserProjects = async (userId) => {
-    try {
-      const response = await axios.get(`${API_URL}/projects/${userId}`);
-      return response.data;
-    } catch (error) {
-      console.error("Eroare la preluarea proiectelor:", error);
-      throw error;
-    }
-  };
+          {/* 2. Pagina de Dashboard (Protejată) */}
+          {/* Dacă nu e logat, îl trimitem înapoi la Login */}
+          <Route 
+            path="/dashboard" 
+            element={isAuthenticated ? <Dashboard /> : <Navigate to="/" />} 
+          />
+
+          {/* 3. Redirecționare pentru orice altă adresă greșită */}
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </div>
+    </Router>
+  );
+}
+
+export default App;
